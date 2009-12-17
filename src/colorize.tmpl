@@ -1,0 +1,120 @@
+// -*- mode: closure-template-html -*-
+// colorize.tmpl
+//
+// This file is part of the restas-colorize library, released under Lisp-LGPL.
+// See file COPYING for details.
+//
+// Author: Moskvitin Andrey <archimag@gmail.com>
+
+{namespace restas.colorize.view}
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * Main frame for standalone colorize service
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+ 
+{template default-standalone-frame}
+    <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+    {\n}
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="ru" xml:lang="ru">
+	    <head>
+      	    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+            {if $title}
+                <title>{$title}</title>
+            {/if}
+
+            {foreach $item in $css}
+                <link href="{$item}" rel="stylesheet" type="text/css" />
+            {/foreach}
+	    </head>
+
+	    <body>
+            {$content |noAutoescape}
+        </body>
+    </html>
+{/template}
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * Show paste info
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+{template show-paste-info}
+    <div class="info">
+        Автор: <strong>{$author}</strong> - {$date}
+    </div>
+{/template}
+    
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * Show list pastes
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+{template show-list-pastes}
+    <div>
+        {$first} - {$first + length($pastes)} из {$totalCount} « Позже | Раньше »
+    </div>
+
+    {foreach $paste in $pastes}
+        <div class="paste">
+            <a href="{$paste.href}">{$paste.title != '' ? $paste.title : '*notitle*'}</a>
+            {call show-paste-info data="$paste" /}
+        </div>
+    {/foreach}
+{/template}
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * Show one paste
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+{template show-one-paste}
+    <strong>{$title}</strong>
+    {call show-paste-info data="all" /}
+    <div class="code">
+        {$code |noAutoescape}
+    </div>
+{/template}    
+    
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * Create paste form
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+{template create-paste-form}
+    <form method="post">
+        <textarea rows="30" name="code" cols="80" style="width: 100%">{$code}</textarea>
+        <table style="text-align: left">
+            <tbody>
+                {if $preview}
+                    <tr>
+                        <th>Описание:</th>
+                        <td>
+                            <input size="60" name="title" type="text" />
+                        </td>
+                    </tr>
+                {/if}
+                    
+                <tr>
+                    <th>Форматировать как:</th>
+                    <td>
+                        <select name="lang" >
+                            {foreach $l in $langs}
+                                <option {if $l.id == $lang}selected{/if} value="{$l.id}">{$l.title}</option>
+                            {/foreach}
+                        </select>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <input type="submit" value="Форматировать" name="preview" />
+        {if $preview}
+            <input type="submit" value="Сохранить" name="save" />
+        {/if}
+
+        {if $preview}
+            <h3>Предварительный просмотр</h3>
+            <div class="code">
+                {$preview |noAutoescape}
+            </div>
+        {/if}
+    </form>    
+{/template}
