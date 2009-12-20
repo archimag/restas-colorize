@@ -1,0 +1,11 @@
+
+.colorize-top-menu { padding-left: 0; padding-bottom: 0.2em; margin: 0;  border-bottom: 1px solid gray;}
+
+.colorize-top-menu li {display: inline; list-style-type: none; margin-right: 0.3em;}
+
+.colorize-list-nav {text-align: right; padding: 0.2em; margin-bottom: 0.2em; border-bottom: 1px solid gray; } 
+
+.paste { margin: 0.5em;}
+.info { font-size: 90%; color: gray; }
+
+.paste-detail { margin-top: 1em; }

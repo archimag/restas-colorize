@@ -35,6 +35,25 @@
 {/template}
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ * Show main menu
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+{template show-main-menu}
+    <ul class="colorize-top-menu">
+        <li>
+            <a href="{$hrefAll}">Все записи</a>
+        </li>
+
+        <li>
+            <a href="{$hrefCreate}">Создать</a>
+        </li>
+    </ul>
+    
+    {$body |noAutoescape}
+{/template}
+
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * Show paste info
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
@@ -50,8 +69,11 @@
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 {template show-list-pastes}
-    <div>
-        {$first} - {$first + length($pastes)} из {$totalCount} « Позже | Раньше »
+    <div class="colorize-list-nav" >
+        {if $hrefAfter}<a href="{$hrefAfter}">« Позже</a>{/if}
+        {$first} - {min($first + length($pastes) - 1, $totalCount)} 
+        из {$totalCount}  
+        {if $hrefBefore}<a href="{$hrefBefore}">Раньше »</a>{/if}
     </div>
 
     {foreach $paste in $pastes}
@@ -67,10 +89,12 @@
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 {template show-one-paste}
-    <strong>{$title}</strong>
-    {call show-paste-info data="all" /}
-    <div class="code">
-        {$code |noAutoescape}
+    <div class="paste-detail">
+        <strong>{$title}</strong>
+        {call show-paste-info data="all" /}
+        <div class="code">
+            {$code |noAutoescape}
+        </div>
     </div>
 {/template}    
     
@@ -83,11 +107,11 @@
         <textarea rows="30" name="code" cols="80" style="width: 100%">{$code}</textarea>
         <table style="text-align: left">
             <tbody>
-                {if $preview}
+                {if $preview and $author}
                     <tr>
                         <th>Описание:</th>
                         <td>
-                            <input size="60" name="title" type="text" />
+                            <input size="60" name="title" type="text" {if $title}value="{$title}"{/if}/>
                         </td>
                     </tr>
                 {/if}
@@ -106,7 +130,7 @@
         </table>
         
         <input type="submit" value="Форматировать" name="preview" />
-        {if $preview}
+        {if $preview and $author}
             <input type="submit" value="Сохранить" name="save" />
         {/if}
 

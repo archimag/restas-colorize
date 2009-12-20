@@ -6,7 +6,7 @@
 ;;;; Author: Moskvitin Andrey <archimag@gmail.com>
 
 (defsystem restas-colorize
-  :depends-on (#:restas #:colorize #:closure-template #:postmodern)
+  :depends-on (#:restas #:colorize #:closure-template #:local-time)
   :components ((:module "src"
                         :components ((:file "packages")
                                      (:file "storage" :depends-on ("packages"))
