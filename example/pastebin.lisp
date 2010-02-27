@@ -7,11 +7,11 @@
 
 (asdf:operate 'asdf:load-op '#:restas-colorize)
 
-(restas:defsite #:pastebin
+(restas:defhost #:pastebin
   (:use #:cl))
 
 (in-package #:pastebin)
 
-(restas:define-site-plugin core (#:restas.colorize))
+(restas:define-submodule core (#:restas.colorize))
 
 (restas:start-site '#:pastebin :port 8080)

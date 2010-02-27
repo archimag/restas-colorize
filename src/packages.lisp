@@ -5,7 +5,7 @@
 ;;;;
 ;;;; Author: Moskvitin Andrey <archimag@gmail.com>
 
-(restas:define-plugin #:restas.colorize
+(restas:define-module #:restas.colorize
   (:use #:cl #:iter)
   (:export #:*storage*
            #:*finalize-page*
