@@ -7,17 +7,19 @@
 
 (in-package #:restas.colorize)
 
-;;;; interface
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;; generic storage interface
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defgeneric count-all-pastes (storage))
+(defgeneric storage-count-pastes (storage))
 
-(defgeneric list-pastes (storage offset limit))
+(defgeneric storage-list-pastes (storage offset limit))
 
-(defgeneric get-paste (storage id))
+(defgeneric storage-get-paste (storage id))
 
-(defgeneric add-paste (storage paste))
+(defgeneric storage-add-paste (storage paste))
 
-(defgeneric remove-paste (storage id))
+(defgeneric storage-remove-paste (storage id))
 
 (defclass paste ()
   ((id :initarg :id :initform nil :accessor paste-id)
@@ -27,31 +29,34 @@
    (lang :initarg :lang :initform nil :accessor paste-lang)
    (code :initarg :code :initform nil :accessor paste-code)))
 
-;;;; storage in memory
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;; implementation storage in memory
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defclass memory-storage ()
   ((pastes :initform nil)
    (last-id :initform 0)))
 
-(defmethod count-all-pastes ((storage memory-storage))
+(defmethod storage-count-pastes ((storage memory-storage))
   (length (slot-value storage 'pastes)))
 
-(defmethod list-pastes ((storage memory-storage) offset limit)
+(defmethod storage-list-pastes ((storage memory-storage) offset limit)
   (let* ((pastes (slot-value storage 'pastes))
          (len (length pastes))
          (end (+ limit offset)))
-    (if (> len offset)
+    (if (and (not (minusp offset))
+             (> len offset))
         (subseq pastes
                 offset
                 (if (and pastes (< end len))
                     end)))))
 
-(defmethod get-paste ((storage memory-storage) id)
+(defmethod storage-get-paste ((storage memory-storage) id)
   (find id
         (slot-value storage 'pastes)
         :key #'paste-id))
 
-(defmethod add-paste ((storage memory-storage) paste)
+(defmethod storage-add-paste ((storage memory-storage) paste)
   (setf (slot-value paste 'id)
         (incf (slot-value storage 'last-id)))
   (setf (slot-value paste 'date)
@@ -60,8 +65,11 @@
         (slot-value storage 'pastes))
   paste)
 
-(defmethod remove-paste (storage id)
+(defmethod storage-remove-paste (storage id)
   (setf (slot-value storage 'pastes)
         (remove id
                 (slot-value storage 'pastes)
                 :key #'(lambda (paste) (getf paste :id)))))
+
+(setf *storage*
+      (make-instance 'memory-storage))

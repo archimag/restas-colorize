@@ -9,36 +9,10 @@
 {namespace restas.colorize.view}
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * Main frame for standalone colorize service
- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
- 
-{template default-standalone-frame}
-    <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-    {\n}
-    <html xmlns="http://www.w3.org/1999/xhtml" lang="ru" xml:lang="ru">
-	    <head>
-      	    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-
-            {if $title}
-                <title>{$title}</title>
-            {/if}
-
-            {foreach $item in $css}
-                <link href="{$item}" rel="stylesheet" type="text/css" />
-            {/foreach}
-	    </head>
-
-	    <body>
-            {$content |noAutoescape}
-        </body>
-    </html>
-{/template}
-
-/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * Show main menu
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-{template show-main-menu}
+{template withMainMenu}
     <ul class="colorize-top-menu">
         <li>
             <a href="{$hrefAll}">Все записи</a>
@@ -48,10 +22,9 @@
             <a href="{$hrefCreate}">Создать</a>
         </li>
     </ul>
-    
+
     {$body |noAutoescape}
 {/template}
-
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * Show paste info
@@ -68,7 +41,7 @@
  * Show list pastes
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-{template show-list-pastes}
+{template list-pastes}
     <div class="colorize-list-nav" >
         {if $hrefAfter}<a href="{$hrefAfter}">« Позже</a>{/if}
         {$first} - {min($first + length($pastes) - 1, $totalCount)} 
@@ -88,7 +61,7 @@
  * Show one paste
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-{template show-one-paste}
+{template view-paste}
     <div class="paste-detail">
         <strong>{$title}</strong>
         {call show-paste-info data="all" /}
@@ -102,7 +75,7 @@
  * Create paste form
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-{template create-paste-form}
+{template create-paste}
     <form method="post">
         <textarea rows="30" name="code" cols="80" style="width: 100%">{$code}</textarea>
         <table style="text-align: left">
@@ -141,4 +114,8 @@
             </div>
         {/if}
     </form>    
+{/template}
+
+{template preview-paste}
+    {call create-paste data="all" /}
 {/template}

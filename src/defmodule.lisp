@@ -18,11 +18,12 @@
            #:paste-code
            #:paste-date
            #:paste-lang
-           #:count-all-pastes
-           #:list-pastes
-           #:get-paste
-           #:add-paste
-           #:remove-paste))
+           ;; storage
+           #:storage-count-pastes
+           #:storage-list-pastes
+           #:storage-get-paste
+           #:storage-add-paste
+           #:storage-remove-paste))
 
 (in-package #:restas.colorize)
 
@@ -32,3 +33,15 @@
 (closure-template:compile-template :common-lisp-backend
                                    (merge-pathnames "src/colorize.tmpl"
                                                     (asdf:component-pathname (asdf:find-system '#:restas-colorize))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;; preferences
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defvar *max-on-page* 10)
+
+(defvar *storage* nil)
+
+(defvar *colorize-user-function*
+  #'(lambda () "anonymous"))
+

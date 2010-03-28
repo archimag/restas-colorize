@@ -8,6 +8,6 @@
 (defsystem restas-colorize
   :depends-on (#:restas #:colorize #:closure-template #:local-time)
   :components ((:module "src"
-                        :components ((:file "packages")
-                                     (:file "storage" :depends-on ("packages"))
+                        :components ((:file "defmodule")
+                                     (:file "storage" :depends-on ("defmodule"))
                                      (:file "colorize" :depends-on ("storage"))))))
