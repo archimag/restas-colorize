@@ -66,7 +66,7 @@
           :href-after (if (> start 1)
                           (format nil
                                   "~A?start=~A"
-                                  (restas:genurl 'all)
+                                  (restas:genurl 'list-pastes)
                                   (max (- start *max-on-page*) 1))))))
 
 (restas:define-route view-paste (":id"
