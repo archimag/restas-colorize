@@ -61,7 +61,7 @@
                               total-count)
                            (format nil
                                    "~A?start=~A"
-                                   (restas:genurl 'all)
+                                   (restas:genurl 'list-pastes)
                                    (+ start *max-on-page*)))
           :href-after (if (> start 1)
                           (format nil
