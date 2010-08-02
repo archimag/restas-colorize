@@ -27,21 +27,25 @@
 
 (in-package #:restas.colorize)
 
-(defparameter *resource-dir*
-  (asdf:component-pathname (asdf:find-system '#:restas-colorize)))
+;;;; load templates
+
+(defparameter *colorize-template-path*
+  (merge-pathnames "src/drawer.tmpl"
+                   (asdf:component-pathname (asdf:find-system '#:restas-colorize))))
 
 (closure-template:compile-template :common-lisp-backend
-                                   (merge-pathnames "src/colorize.tmpl"
-                                                    (asdf:component-pathname (asdf:find-system '#:restas-colorize))))
+                                   *colorize-template-path*)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;;;; preferences
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defvar *max-on-page* 10)
 
 (defvar *storage* nil)
 
-(defvar *colorize-user-function*
+(defparameter *colorize-user-function*
   #'(lambda () "anonymous"))
 
+(defun colorize-user ()
+  (if *colorize-user-function*
+      (funcall *colorize-user-function*)))

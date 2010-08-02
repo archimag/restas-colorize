@@ -10,4 +10,5 @@
   :components ((:module "src"
                         :components ((:file "defmodule")
                                      (:file "storage" :depends-on ("defmodule"))
-                                     (:file "colorize" :depends-on ("storage"))))))
+                                     (:file "drawer" :depends-on ("defmodule"))
+                                     (:file "routes" :depends-on ("storage" "drawer"))))))
