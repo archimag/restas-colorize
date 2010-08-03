@@ -33,36 +33,31 @@
 ;;;; default implementation
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defclass base-drawer () ())
+(defclass drawer () ())
 
-(defmethod finalize-page ((drawer base-drawer) data)
+(defmethod finalize-page ((drawer drawer) data)
   (restas.colorize.view:finalize-page data))
 
-(defmethod colorize (drawer  code (lang string))
-  (colorize drawer code (find-symbol lang :keyword)))
 
-(defmethod colorize (drawer (code string) (lang symbol))
-  (colorize::html-colorization lang code))
-
-(defmethod restas:render-object ((drawer base-drawer) (data list))
+(defmethod restas:render-object ((drawer drawer) (data list))
   (let ((content (render-route-data drawer
                                     data
                                     (restas:route-symbol restas:*route*)))
         (menu (restas.colorize.view:main-menu
-               (list :href-all  (restas:genurl 'list-pastes)
-                     :href-create (restas:genurl 'create-paste)))))
+               (list :href-all  (restas:genurl 'list-notes)
+                     :href-create (restas:genurl 'create-note)))))
     (finalize-page drawer
                    (list :content content
                          :menu menu
                          :title (getf data :title)))))
 
 
-(defmethod render-route-data ((drawer base-drawer) (data list) route)
+(defmethod render-route-data ((drawer drawer) (data list) route)
   (funcall (find-symbol (symbol-name route)
                         '#:restas.colorize.view)
            data))
 
-(defmethod render-route-data ((drawer base-drawer) (data list) (route (eql 'view-paste)))
+(defmethod render-route-data ((drawer drawer) (data list) (route (eql 'view-note)))
   (call-next-method drawer
                     (list* :code (colorize drawer
                                            (getf data :code)
@@ -70,13 +65,13 @@
                            data)
                     route))
 
-(defmethod render-route-data ((drawer base-drawer) (data list) (route (eql 'create-paste)))
+(defmethod render-route-data ((drawer drawer) (data list) (route (eql 'create-note)))
   (call-next-method drawer
                     (list* :langs (colorize-langs drawer)
                            data)
                     route))
 
-(defmethod render-route-data ((drawer base-drawer) (data list) (route (eql 'preview-paste)))
+(defmethod render-route-data ((drawer drawer) (data list) (route (eql 'preview-note)))
   (call-next-method drawer
                     (list* :langs (colorize-langs drawer)
                            :preview (colorize drawer
@@ -85,6 +80,4 @@
                            data)
                     route))
 
-
-
-(setf *default-render-method* (make-instance 'base-drawer))
+(setf *default-render-method* (make-instance 'drawer))

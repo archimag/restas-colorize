@@ -11,19 +11,25 @@
            #:*finalize-page*
            #:*colorize-user-function*
            #:*max-on-page*
-           #:paste
-           #:paste-id
-           #:paste-title
-           #:paste-author
-           #:paste-code
-           #:paste-date
-           #:paste-lang
+           ;; note
+           #:note
+           #:note-id
+           #:note-title
+           #:note-author
+           #:note-code
+           #:note-date
+           #:note-lang
            ;; storage
-           #:storage-count-pastes
-           #:storage-list-pastes
-           #:storage-get-paste
-           #:storage-add-paste
-           #:storage-remove-paste))
+           #:storage-count-notes
+           #:storage-list-notes
+           #:storage-get-note
+           #:storage-add-note
+           #:storage-remove-note
+           ;;
+           #:finalize-page
+           #:render-route-data
+           #:colorize
+           #:colorize-langs))
 
 (in-package #:restas.colorize)
 
@@ -35,7 +41,6 @@
 
 (closure-template:compile-template :common-lisp-backend
                                    *colorize-template-path*)
-
 
 ;;;; preferences
 

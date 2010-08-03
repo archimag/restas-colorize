@@ -11,65 +11,66 @@
 ;;;; generic storage interface
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defgeneric storage-count-pastes (storage))
+(defgeneric storage-count-notes (storage))
 
-(defgeneric storage-list-pastes (storage offset limit))
+(defgeneric storage-list-notes (storage offset limit))
 
-(defgeneric storage-get-paste (storage id))
+(defgeneric storage-get-note (storage id))
 
-(defgeneric storage-add-paste (storage paste))
+(defgeneric storage-add-note (storage note))
 
-(defgeneric storage-remove-paste (storage id))
+(defgeneric storage-remove-note (storage id))
 
-(defclass paste ()
-  ((id :initarg :id :initform nil :accessor paste-id)
-   (date :initarg :date :initform nil :accessor paste-date)
-   (author :initarg :author :initform nil :accessor paste-author)
-   (title :initarg :title :initform nil :accessor paste-title)
-   (lang :initarg :lang :initform nil :accessor paste-lang)
-   (code :initarg :code :initform nil :accessor paste-code)))
+(defclass note ()
+  ((id :initarg :id :initform nil :accessor note-id)
+   (date :initarg :date :initform nil :accessor note-date)
+   (author :initarg :author :initform nil :accessor note-author)
+   (title :initarg :title :initform nil :accessor note-title)
+   (lang :initarg :lang :initform nil :accessor note-lang)
+   (code :initarg :code :initform nil :accessor note-code)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; implementation storage in memory
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defclass memory-storage ()
-  ((pastes :initform nil)
+  ((notes :initform nil)
    (last-id :initform 0)))
 
-(defmethod storage-count-pastes ((storage memory-storage))
-  (length (slot-value storage 'pastes)))
+(defmethod storage-count-notes ((storage memory-storage))
+  (length (slot-value storage 'notes)))
 
-(defmethod storage-list-pastes ((storage memory-storage) offset limit)
-  (let* ((pastes (slot-value storage 'pastes))
-         (len (length pastes))
+(defmethod storage-list-notes ((storage memory-storage) offset limit)
+  (let* ((notes (slot-value storage 'notes))
+         (len (length notes))
          (end (+ limit offset)))
     (if (and (not (minusp offset))
              (> len offset))
-        (subseq pastes
+        (subseq notes
                 offset
-                (if (and pastes (< end len))
+                (if (and notes (< end len))
                     end)))))
 
-(defmethod storage-get-paste ((storage memory-storage) id)
+(defmethod storage-get-note ((storage memory-storage) id)
   (find id
-        (slot-value storage 'pastes)
-        :key #'paste-id))
+        (slot-value storage 'notes)
+        :key #'note-id))
 
-(defmethod storage-add-paste ((storage memory-storage) paste)
-  (setf (slot-value paste 'id)
+(defmethod storage-add-note ((storage memory-storage) note)
+  (setf (slot-value note 'id)
         (incf (slot-value storage 'last-id)))
-  (setf (slot-value paste 'date)
+  (setf (slot-value note 'date)
         (local-time:now))
-  (push paste
-        (slot-value storage 'pastes))
-  paste)
+  (push note
+        (slot-value storage 'notes))
+  note)
 
-(defmethod storage-remove-paste (storage id)
-  (setf (slot-value storage 'pastes)
+(defmethod storage-remove-note (storage id)
+  (setf (slot-value storage 'notes)
         (remove id
-                (slot-value storage 'pastes)
-                :key #'(lambda (paste) (getf paste :id)))))
+                (slot-value storage 'notes)
+                :key #'(lambda (note) (getf note :id)))))
 
-(setf *storage*
-      (make-instance 'memory-storage))
+;;;; set default value of *storage*
+
+(setf *storage* (make-instance 'memory-storage))

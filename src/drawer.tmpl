@@ -46,10 +46,10 @@
 {/template}
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * Show paste info
+ * Show note info
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-{template show-paste-info}
+{template show-note-info}
     <div class="info">
         Автор: <strong>{$author}</strong> - {$date}
     </div>
@@ -57,33 +57,33 @@
     
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * Show list pastes
+ * Show list notes
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-{template list-pastes}
+{template list-notes}
     <div class="colorize-list-nav" >
         {if $hrefAfter}<a href="{$hrefAfter}">« Позже</a>{/if}
-        {$first} - {min($first + length($pastes) - 1, $totalCount)} 
+        {$first} - {min($first + length($notes) - 1, $totalCount)} 
         из {$totalCount}  
         {if $hrefBefore}<a href="{$hrefBefore}">Раньше »</a>{/if}
     </div>
 
-    {foreach $paste in $pastes}
-        <div class="paste">
-            <a href="{$paste.href}">{$paste.title != '' ? $paste.title : '*notitle*'}</a>
-            {call show-paste-info data="$paste" /}
+    {foreach $note in $notes}
+        <div class="note">
+            <a href="{$note.href}">{$note.title != '' ? $note.title : '*notitle*'}</a>
+            {call show-note-info data="$note" /}
         </div>
     {/foreach}
 {/template}
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * Show one paste
+ * Show one note
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-{template view-paste}
-    <div class="paste-detail">
+{template view-note}
+    <div class="note-detail">
         <strong>{$title}</strong>
-        {call show-paste-info data="all" /}
+        {call show-note-info data="all" /}
         <div class="code">
             {$code |noAutoescape}
         </div>
@@ -91,10 +91,10 @@
 {/template}    
     
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- * Create paste form
+ * Create note form
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-{template create-paste}
+{template create-note}
     <form method="post">
         <textarea rows="30" name="code" cols="80" style="width: 100%">{$code}</textarea>
         <table style="text-align: left">
@@ -135,6 +135,6 @@
     </form>    
 {/template}
 
-{template preview-paste}
-    {call create-paste data="all" /}
+{template preview-note}
+    {call create-note data="all" /}
 {/template}
