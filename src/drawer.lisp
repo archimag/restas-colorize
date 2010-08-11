@@ -20,7 +20,7 @@
 (defgeneric colorize (drawer code lang)
   (:documentation "Make highlight html from code")
   (:method (drawer code lang)
-    (colorize::html-colorization lang code)))
+    (colorize::html-colorization (intern (string-upcase lang) :keyword) code)))
 
 (defgeneric colorize-langs (drawer)
   (:documentation "List of supported languages")
@@ -45,7 +45,7 @@
                                     (restas:route-symbol restas:*route*)))
         (menu (restas.colorize.view:main-menu
                (list :href-all  (restas:genurl 'list-notes)
-                     :href-create (restas:genurl 'create-note)))))
+                     :href-иcreate (restas:genurl 'create-note)))))
     (finalize-page drawer
                    (list :content content
                          :menu menu

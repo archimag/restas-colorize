@@ -27,33 +27,35 @@
   (restas:redirect 'list-notes))
 
 (restas:define-route list-notes ("all")
-  (let* ((total-count (storage-count-notes *storage*))
-         (start (min (max (or (ignore-errors (parse-integer (hunchentoot:get-parameter "start")))
-                              1)
-                          1)
-                     total-count)))
-    (list :title "All notes"
-          :notes (iter (for note in (storage-list-notes *storage*
-                                                        (1- start)
-                                                        *max-on-page*))
-                       (collect (note-plist/short note)))
-          :first start
-          :total-count total-count
-          :href-before (if (< (+ (1- start) *max-on-page*)
-                              total-count)
-                           (format nil
-                                   "~A?start=~A"
-                                   (restas:genurl 'list-notes)
-                                   (+ start *max-on-page*)))
-          :href-after (if (> start 1)
-                          (format nil
-                                  "~A?start=~A"
-                                  (restas:genurl 'list-notes)
-                                  (max (- start *max-on-page*) 1))))))
+  (aglorp:with-storage (*storage*)
+    (let* ((total-count (aglorp:count-objects 'note))
+           (start (min (max (or (ignore-errors (parse-integer (hunchentoot:get-parameter "start")))
+                                1)
+                            1)
+                       total-count)))
+      (list :title "All notes"
+            :notes (iter (for note in (aglorp:read-objects 'note
+                                                           :limit *max-on-page*
+                                                           :offset (1- start) ))
+                         (collect (note-plist/short note)))
+            :first start
+            :total-count total-count
+            :href-before (if (< (+ (1- start) *max-on-page*)
+                                total-count)
+                             (format nil
+                                     "~A?start=~A"
+                                     (restas:genurl 'list-notes)
+                                     (+ start *max-on-page*)))
+            :href-after (if (> start 1)
+                            (format nil
+                                    "~A?start=~A"
+                                    (restas:genurl 'list-notes)
+                                    (max (- start *max-on-page*) 1)))))))
 
 (restas:define-route view-note (":id"
                                 :parse-vars (list :id #'parse-integer))
-  (note-plist (storage-get-note *storage* id)))
+  (aglorp:with-storage (*storage*)
+    (note-plist (aglorp:one-object 'note :note-id id))))
 
 (restas:define-route create-note ("create")
   (list :title "Создать"))
@@ -73,10 +75,11 @@
   (let ((author (colorize-user)))
     (if author
         (restas:redirect 'view-note
-                         :id (note-id (storage-add-note *storage*
-                                                        (make-instance  'note
-                                                                        :code (hunchentoot:post-parameter "code")
-                                                                        :author author
-                                                                        :lang (hunchentoot:post-parameter "lang")
-                                                                        :title (hunchentoot:post-parameter "title")))))
+                         :id (aglorp:with-storage (*storage*)
+                               (note-id (aglorp:persist-object
+                                         (make-instance  'note
+                                                         :code (hunchentoot:post-parameter "code")
+                                                         :author author
+                                                         :lang (hunchentoot:post-parameter "lang")
+                                                         :title (hunchentoot:post-parameter "title"))))))
         hunchentoot:+http-forbidden+)))
