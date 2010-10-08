@@ -27,7 +27,7 @@
   (restas:redirect 'list-notes))
 
 (restas:define-route list-notes ("all")
-  (aglorp:with-storage (*storage*)
+  (aglorp:with-storage *storage*
     (let* ((total-count (aglorp:count-objects 'note))
            (start (min (max (or (ignore-errors (parse-integer (hunchentoot:get-parameter "start")))
                                 1)
@@ -54,7 +54,7 @@
 
 (restas:define-route view-note (":id"
                                 :parse-vars (list :id #'parse-integer))
-  (aglorp:with-storage (*storage*)
+  (aglorp:with-storage *storage*
     (note-plist (aglorp:one-object 'note :note-id id))))
 
 (restas:define-route create-note ("create")
@@ -75,7 +75,7 @@
   (let ((author (colorize-user)))
     (if author
         (restas:redirect 'view-note
-                         :id (aglorp:with-storage (*storage*)
+                         :id (aglorp:with-storage *storage*
                                (note-id (aglorp:persist-object
                                          (make-instance  'note
                                                          :code (hunchentoot:post-parameter "code")
