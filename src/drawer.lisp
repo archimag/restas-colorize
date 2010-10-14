@@ -20,7 +20,7 @@
 (defgeneric colorize (drawer code lang)
   (:documentation "Make highlight html from code")
   (:method (drawer code lang)
-    (colorize::html-colorization lang code)))
+    (colorize::html-colorization (intern lang :keyword) code)))
 
 (defgeneric colorize-langs (drawer)
   (:documentation "List of supported languages")
