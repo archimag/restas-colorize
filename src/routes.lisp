@@ -28,7 +28,7 @@
 
 (restas:define-route list-notes ("all")
   (let* ((total-count (storage-count-notes *storage*))
-         (start (min (max (or (ignore-errors (parse-integer (hunchentoot:get-parameter "start")))
+         (start (min (max (or (ignore-errors (parse-integer (wsal:get-parameter "start")))
                               1)
                           1)
                      total-count)))
@@ -60,23 +60,23 @@
 
 (restas:define-route preview-note ("create"
                                    :method :post
-                                   :requirement #'(lambda () (hunchentoot:post-parameter "preview")))
-  (list :title (hunchentoot:post-parameter "title")
+                                   :requirement #'(lambda () (wsal:post-parameter "preview")))
+  (list :title (wsal:post-parameter "title")
         :author (colorize-user)
-        :code (hunchentoot:post-parameter "code")
-        :lang (hunchentoot:post-parameter "lang")))
+        :code (wsal:post-parameter "code")
+        :lang (wsal:post-parameter "lang")))
 
 
 (restas:define-route save-note ("create"
                                 :method :post
-                                :requirement #'(lambda () (hunchentoot:post-parameter "save")))
+                                :requirement #'(lambda () (wsal:post-parameter "save")))
   (let ((author (colorize-user)))
     (if author
         (restas:redirect 'view-note
                          :id (note-id (storage-add-note *storage*
                                                         (make-instance  'note
-                                                                        :code (hunchentoot:post-parameter "code")
+                                                                        :code (wsal:post-parameter "code")
                                                                         :author author
-                                                                        :lang (hunchentoot:post-parameter "lang")
-                                                                        :title (hunchentoot:post-parameter "title")))))
-        hunchentoot:+http-forbidden+)))
+                                                                        :lang (wsal:post-parameter "lang")
+                                                                        :title (wsal:post-parameter "title")))))
+        wsal:+http-forbidden+)))
