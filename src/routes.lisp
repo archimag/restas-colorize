@@ -51,25 +51,23 @@
                                   (restas:genurl 'list-notes)
                                   (max (- start *max-on-page*) 1))))))
 
-(restas:define-route view-note (":id"
-                                :parse-vars (list :id #'parse-integer))
+(restas:define-route view-note (":id")
+  (:sift-variables  (id 'integer))
   (note-plist (storage-get-note *storage* id)))
 
 (restas:define-route create-note ("create")
   (list :title "Создать"))
 
-(restas:define-route preview-note ("create"
-                                   :method :post
-                                   :requirement #'(lambda () (hunchentoot:post-parameter "preview")))
+(restas:define-route preview-note ("create" :method :post)
+  (:requirement #'(lambda () (hunchentoot:post-parameter "preview")))
   (list :title (hunchentoot:post-parameter "title")
         :author (colorize-user)
         :code (hunchentoot:post-parameter "code")
         :lang (hunchentoot:post-parameter "lang")))
 
 
-(restas:define-route save-note ("create"
-                                :method :post
-                                :requirement #'(lambda () (hunchentoot:post-parameter "save")))
+(restas:define-route save-note ("create" :method :post)
+  (:requirement #'(lambda () (hunchentoot:post-parameter "save")))
   (let ((author (colorize-user)))
     (if author
         (restas:redirect 'view-note
